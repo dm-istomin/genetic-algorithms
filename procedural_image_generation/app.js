@@ -77,12 +77,25 @@ function seedCanvas(args) {
         ctx.closePath();
         ctx.beginPath();
     }
-    console.log('DATA URL, GENERATED CANVAS: ', canvas.toDataURL());
-    console.log('TYPE: ', typeof canvas.toDataURL())
-    console.log('GENERATED LENGTH: ', canvas.toDataURL().length);
-    console.log('GENERATED PIXEL DATA: ', ctx.getImageData(0, 0, canvas.width, canvas.height).data);
-    console.log('GENERATED IMAGE DATA LENGTH: ', ctx.getImageData(0, 0, canvas.width, canvas.height).data.length);
 
+    var generatedPixelData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+
+    console.log('DATA URL, GENERATED CANVAS: ', canvas.toDataURL());
+    console.log('GENERATED LENGTH: ', canvas.toDataURL().length);
+    console.log('GENERATED PIXEL DATA: ', generatedPixelData);
+    console.log('GENERATED IMAGE DATA LENGTH: ', generatedPixelData.length);
+
+    var diffs = [];
+
+    for (var i = 0; i < generatedPixelData.length; i++) {
+      var fitness = 1 / Math.abs(args.targetData[i] - generatedPixelData[i]);
+      fitness === 1 ? fitness = 0.99 : fitness;
+      fitness === Infinity ? fitness = 1.0 : fitness;
+
+      diffs.push(fitness);
+    }
+    console.log('DIFFS: ', diffs);
+    console.log('RELATIVE FITNESS: ', diffs.reduce(function(sum, val) {return sum += val}) / generatedPixelData.length);
 }
 
 function fileToCanvas(args) {
@@ -125,7 +138,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         seedCanvas({
           canvas: generatedCanvas,
-          ctx: ctxGenerated
+          ctx: ctxGenerated,
+          targetData: ctxOrigin.getImageData(0, 0, originCanvas.width, originCanvas.height).data
         });
     });
 });
