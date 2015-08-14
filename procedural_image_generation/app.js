@@ -18,9 +18,12 @@ Ok, apparently pixel data is the answer. Uniform length - 1,000,000 ints
 between 0 and 255. Need a function that will loop over, take the difference.
 If all one million are identical, should return 1.0. If all million are on
 opposite sides of the range (one has 0, the other 255 for all pairs) then
-returns 0.
+returns 0. Some sort of ratio will be involved I think.
 
-Loop over each, take absolute value of (origin value - generated value)
+Loop over each, take absolute value of (origin value - generated value).
+
+ for each 1 / Math.abs(targetImgVal - generatedImgVal) => sum and divide by 1,000,000.
+
 
 ============================================================================= */
 
