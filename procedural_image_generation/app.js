@@ -67,8 +67,6 @@ function seedCanvas(args) {
         var origin = {x: randomNum(canvas.height), y: randomNum(canvas.width)},
             randomColor = generateRandomColor();
 
-        console.log('Generating shape #', shape + 1);
-        console.log('Random color is: ', randomColor);
         path.moveTo(origin.x, origin.y);
 
         for (var vertex = 0; vertex < numOfShapeVertices; vertex++) {
@@ -98,8 +96,6 @@ function fileToCanvas(args) {
   reader.onload = function() {
     img.src = reader.result;
     ctx.drawImage(img, 0, 0, canvas.height, canvas.width);
-    console.log('DATA URL, ORIGIN CANVAS: ', canvas.toDataURL());
-    console.log('TYPE: ', typeof canvas.toDataURL())
     console.log('ORIGIN LENGTH: ', canvas.toDataURL().length);
     console.log('ORIGIN PIXEL DATA: ', ctx.getImageData(0, 0, canvas.width, canvas.height).data);
     console.log('ORIGIN IMAGE DATA LENGTH: ', ctx.getImageData(0, 0, canvas.width, canvas.height).data.length);
