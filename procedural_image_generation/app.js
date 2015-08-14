@@ -136,6 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     uploadForm.addEventListener('submit', function(event) {
         event.preventDefault();
+        if (!inputField.files.item(0)) { alert('No file submitted!'); return; }
 
         fileToCanvas({
           canvas: originCanvas,
