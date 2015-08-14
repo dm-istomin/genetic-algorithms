@@ -85,17 +85,24 @@ function seedCanvas(args) {
     console.log('GENERATED PIXEL DATA: ', generatedPixelData);
     console.log('GENERATED IMAGE DATA LENGTH: ', generatedPixelData.length);
 
-    var diffs = [];
+    console.log('OVERALL FITNESS: ', getFitnessScore(args.targetData, generatedPixelData));
+}
 
-    for (var i = 0; i < generatedPixelData.length; i++) {
-      var fitness = 1 / Math.abs(args.targetData[i] - generatedPixelData[i]);
-      fitness === 1 ? fitness = 0.99 : fitness;
-      fitness === Infinity ? fitness = 1.0 : fitness;
+function getFitnessScore(targetPixelData, generatedPixelData) {
+  var diffs = [];
 
-      diffs.push(fitness);
-    }
-    console.log('DIFFS: ', diffs);
-    console.log('RELATIVE FITNESS: ', diffs.reduce(function(sum, val) {return sum += val}) / generatedPixelData.length);
+  for (var i = 0; i < generatedPixelData.length; i++) {
+    var fitness = 1 / Math.abs(targetPixelData[i] - generatedPixelData[i]);
+    fitness === 1 ? fitness = 0.99 : fitness;
+    fitness === Infinity ? fitness = 1.0 : fitness;
+
+    diffs.push(fitness);
+  }
+  var avgFitness = diffs.reduce(function(sum, val) {
+    return sum += val;
+  }) / generatedPixelData.length;
+
+  return avgFitness;
 }
 
 function fileToCanvas(args) {
