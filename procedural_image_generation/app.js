@@ -55,7 +55,7 @@ function generateRandomColor() {
 
 // create random shapes on canvas
 
-function seedCanvas(args) {
+function drawCanvas(args) {
     var canvas = args.canvas,
         ctx = args.ctx,
         numShapes = args.numShapes || 50,
@@ -143,10 +143,10 @@ document.addEventListener('DOMContentLoaded', function() {
           file: inputField.files.item(0)
         });
 
-        seedCanvas({
+        drawCanvas({
           canvas: generatedCanvas,
           ctx: ctxGenerated,
-          targetData: ctxOrigin.getImageData(0, 0, originCanvas.width, originCanvas.height).data
+          targetData: ctxGenerated.getImageData(0, 0, generatedCanvas.width, generatedCanvas.height).data
         });
     });
 });
