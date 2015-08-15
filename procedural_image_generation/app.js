@@ -122,6 +122,21 @@ function fileToCanvas(args) {
   reader.readAsDataURL(file);
 }
 
+function SeedImage(args) {
+  this.numShapes   = args.numShapes || 50;
+  this.numVertices = args.numVertices || 3;
+  this.xMax        = args.xMax;
+  this.yMax        = args.yMax;
+  this.shapeData   = [];
+
+  for (var i = 0; i < this.numShapes; i++) {
+    this.shapeData.push({color: generateRandomColor(), vertices: []});
+    for (var j = 0; j < this.numVertices; j++) {
+      this.shapeData[i].vertices.push({x: randomNum(this.xMax), y:randomNum(this.yMax)});
+    }
+  }
+}
+
 // Get image data out of a file uploaded by the user and draw it to canvas:
 
 document.addEventListener('DOMContentLoaded', function() {
