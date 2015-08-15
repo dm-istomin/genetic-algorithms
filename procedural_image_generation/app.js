@@ -31,8 +31,11 @@ Loop over each, take absolute value of (origin value - generated value).
 
 var constants = {};
 
-constants.MUTATION_RATE = 0.01;
-constants.CROSSOVER_RATE = 0.7;
+constants.MUTATION_RATE          = 0.01;
+constants.CROSSOVER_RATE         = 0.7;
+constants.POPULATION_SIZE        = 100;
+constants.NUM_SHAPES_PER_IMAGE   = 50;
+constants.NUM_VERTICES_PER_SHAPE = 3;
 
 // generate random number given a max and min
 
