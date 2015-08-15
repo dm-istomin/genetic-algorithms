@@ -82,8 +82,6 @@ function drawCanvas(args) {
     console.log('GENERATED LENGTH: ', canvas.toDataURL().length);
     console.log('GENERATED PIXEL DATA: ', generatedPixelData);
     console.log('GENERATED IMAGE DATA LENGTH: ', generatedPixelData.length);
-
-    console.log('OVERALL FITNESS: ', getFitnessScore(args.targetData, generatedPixelData));
 }
 
 function getFitnessScore(targetPixelData, generatedPixelData) {
