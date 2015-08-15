@@ -59,25 +59,21 @@ function generateRandomColor() {
 // create random shapes on canvas
 
 function drawCanvas(args) {
-    var canvas = args.canvas,
-        ctx = args.ctx,
-        numShapes = args.numShapes || 50,
-        numOfShapeVertices = args.numOfShapeVertices || 3;
+    var canvas    = args.canvas,
+        ctx       = args.ctx,
+        imageData = args.imageData;
 
     var path = new Path2D();
 
-    for (var shape = 0; shape < numShapes; shape++) {
-        var origin = {x: randomNum(canvas.height), y: randomNum(canvas.width)},
-            randomColor = generateRandomColor();
+    for (var i = 0; i < constants.NUM_SHAPES_PER_IMAGE; i++) {
+      path.moveTo(imageData.shapeData[i].vertices[0].x, imageData.shapeData[i].vertices[0].y);
 
-        path.moveTo(origin.x, origin.y);
-
-        for (var vertex = 0; vertex < numOfShapeVertices; vertex++) {
-            path.lineTo(randomNum(canvas.height), randomNum(canvas.width));
-        }
-        ctx.fillStyle = randomColor;
-        ctx.fill(path);
-        ctx.closePath();
+      for(var j = 1; j < constants.NUM_VERTICES_PER_SHAPE; j++) {
+        path.lineTo(imageData.shapeData[i].vertices[j].x, imageData.shapeData[i].vertices[j].y);
+      }
+      ctx.fillStyle = imageData.shapeData[i].color;
+      ctx.fill(path);
+      ctx.closePath(path);
     }
 
     var generatedPixelData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
@@ -125,46 +121,63 @@ function fileToCanvas(args) {
   reader.readAsDataURL(file);
 }
 
-function SeedImage(args) {
-  this.numShapes   = args.numShapes || 50;
-  this.numVertices = args.numVertices || 3;
-  this.xMax        = args.xMax;
-  this.yMax        = args.yMax;
+function SeedImage() {
   this.shapeData   = [];
 
-  for (var i = 0; i < this.numShapes; i++) {
+  for (var i = 0; i < constants.NUM_SHAPES_PER_IMAGE; i++) {
     this.shapeData.push({color: generateRandomColor(), vertices: []});
-    for (var j = 0; j < this.numVertices; j++) {
-      this.shapeData[i].vertices.push({x: randomNum(this.xMax), y:randomNum(this.yMax)});
+    for (var j = 0; j < constants.NUM_VERTICES_PER_SHAPE; j++) {
+      this.shapeData[i].vertices.push({
+        x: randomNum(constants.X_LIMIT),
+        y: randomNum(constants.Y_LIMIT)
+      });
     }
   }
 }
 
+function Population() {
+  this.members   = [];
+
+  for (var i = 0; i < constants.POPULATION_SIZE; i++) {
+    this.members.push(new SeedImage());
+  }
+}
+
+// function Population.prototype.
+
 // Get image data out of a file uploaded by the user and draw it to canvas:
 
 document.addEventListener('DOMContentLoaded', function() {
-    var inputField = document.querySelector('input'),
-        uploadForm = document.querySelector('form');
+  var inputField      = document.querySelector('input'),
+      uploadForm      = document.querySelector('form'),
+      clearButton     = document.getElementById('clear-canvas'),
+      generatedCanvas = document.getElementById('generated-image'),
+      originCanvas    = document.getElementById('original-image');
 
-    var generatedCanvas = document.getElementById('generated-image'),
-        originCanvas    = document.getElementById('original-image'),
-        ctxGenerated = generatedCanvas.getContext('2d'),
-        ctxOrigin    = originCanvas.getContext('2d');
+  var ctxGenerated = generatedCanvas.getContext('2d'),
+      ctxOrigin    = originCanvas.getContext('2d');
 
-    uploadForm.addEventListener('submit', function(event) {
-        event.preventDefault();
-        if (!inputField.files.item(0)) { alert('No file submitted!'); return; }
+  constants.X_LIMIT = generatedCanvas.width;
+  constants.Y_LIMIT = generatedCanvas.height;
 
-        fileToCanvas({
-          canvas: originCanvas,
-          ctx: ctxOrigin,
-          file: inputField.files.item(0)
-        });
+  clearButton.addEventListener('click', function() {
+    ctxGenerated.clearRect(0, 0, constants.X_LIMIT, constants.Y_LIMIT);
+  });
 
-        drawCanvas({
-          canvas: generatedCanvas,
-          ctx: ctxGenerated,
-          targetData: ctxGenerated.getImageData(0, 0, generatedCanvas.width, generatedCanvas.height).data
-        });
+  uploadForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+    if (!inputField.files.item(0)) { alert('No file submitted!'); return; }
+
+    fileToCanvas({
+      canvas: originCanvas,
+      ctx: ctxOrigin,
+      file: inputField.files.item(0)
     });
+
+    drawCanvas({
+      canvas: generatedCanvas,
+      ctx: ctxGenerated,
+      imageData: new SeedImage()
+    });
+  });
 });
