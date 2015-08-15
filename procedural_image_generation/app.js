@@ -75,7 +75,6 @@ function seedCanvas(args) {
         ctx.fillStyle = randomColor;
         ctx.fill(path);
         ctx.closePath();
-        ctx.beginPath();
     }
 
     var generatedPixelData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
